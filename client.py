@@ -1,7 +1,7 @@
 from typing import Dict, Any
 from openenv.core import EnvClient
 from openenv.core.client_types import StepResult
-from .models import DevOpsAction, DevOpsObservation, DevOpsState
+from models import DevOpsAction, DevOpsObservation, DevOpsState
 
 class DevOpsEnvClient(EnvClient[DevOpsAction, DevOpsObservation, DevOpsState]):
     """Client for the DevOps SRE Environment."""
