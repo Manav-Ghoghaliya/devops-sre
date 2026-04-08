@@ -60,6 +60,7 @@ def get_model_message(client: OpenAI, step: int, last_stdout: str, last_stderr: 
         return "ls -la" # Fallback action so the loop doesn't crash
 
 async def main() -> None:
+    success = False
     if not API_KEY:
         raise ValueError("Missing HF_TOKEN or OPENAI_API_KEY environment variable.")
 
@@ -77,7 +78,7 @@ async def main() -> None:
     log_start(task=TASK_NAME, env=BENCHMARK, model=MODEL_NAME)
 
     try:
-        result = env.reset()
+        result = await env.reset()
         last_stdout = result.observation.stdout
         last_stderr = result.observation.stderr
         pwd = result.observation.pwd
@@ -88,7 +89,7 @@ async def main() -> None:
 
             # 2. Execute action in the environment
             action = DevOpsAction(command=command)
-            result = env.step(action)
+            result = await env.step(action)
             obs = result.observation
 
             reward = result.reward or 0.0
@@ -112,7 +113,7 @@ async def main() -> None:
 
     finally:
         try:
-            env.close()
+            await env.close()
         except Exception as e:
             pass
         log_end(success=success, steps=steps_taken, score=score, rewards=rewards)
